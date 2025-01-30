@@ -31,8 +31,8 @@ const User = () => {
   }, [navigate, token]);
 
   const handleDelete = () => {
-    setLocalFirstName("");
-    setLocalLastName("");
+    setLocalFirstName(firstName);
+    setLocalLastName(lastName);
   };
   const setUserProfile = async (e) => {
     e.preventDefault();

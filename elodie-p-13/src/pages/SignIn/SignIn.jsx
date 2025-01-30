@@ -9,6 +9,7 @@ const SignIn = () => {
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
   const token = useSelector((state) => state.user.token);
+  const status = useSelector((state) => state.user.state);
   let navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -24,7 +25,7 @@ const SignIn = () => {
   const login = async (e) => {
     e.preventDefault();
     try {
-      dispatch(signinThunk({ email, password }));
+      dispatch(signinThunk({ email, password }));    
     } catch (e) {
       console.log(e);
     }
@@ -64,6 +65,11 @@ const SignIn = () => {
               />
               <label htmlFor="remember-me">Remember me</label>
             </div>
+
+
+          {(status === 'rejected') ? <p>
+              Connexion impossible. Veuillez vérifier la connexion au serveur
+            </p> : ''}            
 
             <button className="sign-in-button">Sign In</button>
           </form>
