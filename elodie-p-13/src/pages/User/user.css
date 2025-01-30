@@ -12,7 +12,11 @@ body {
   flex-direction: column;
   min-height: 100vh;
 }
-
+.editInput {
+  color: #2c3e50;
+  font-size: large;
+  text-align: center;
+}
 .sr-only {
   border: 0 !important;
   clip: rect(1px, 1px, 1px, 1px) !important; /* 1 */
@@ -160,11 +164,6 @@ body {
   font-weight: bold;
   margin-bottom: 0.5rem;
 }
-
-.sign-in-icon {
-  font-size: 5rem;
-}
-
 .input-remember {
   display: flex;
 }
