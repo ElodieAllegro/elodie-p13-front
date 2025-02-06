@@ -32,7 +32,7 @@ export const userSlice = createSlice({
       })
       .addCase(signinThunk.rejected, (state, action) => {
         state.state = "rejected";
-        state.errorMessage = action.payload || "Erreur inconnue.";
+        state.errorMessage = action.payload;
       });
 
     builder
