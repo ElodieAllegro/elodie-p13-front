@@ -9,6 +9,8 @@ const SignIn = () => {
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
   const token = useSelector((state) => state.user.token);
+  const [errorEmail, setErrorEmail] = useState("");
+  const [errorPassword, setErrorPassword] = useState("");
   const errorMessage = useSelector((state) => state.user.errorMessage);
   let navigate = useNavigate();
   const dispatch = useDispatch();
@@ -22,13 +24,35 @@ const SignIn = () => {
     }
   }, [token, remember, navigate]);
 
+  const validateEmail = (email) => {
+    const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    return regex.test(email);
+  };
+  const validatePassword = (password) => {
+    const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    return regex.test(password);
+  };
+
   const login = async (e) => {
     e.preventDefault();
-    try {
-      dispatch(signinThunk({ email, password }));
-    } catch (e) {
-      console.log(e);
+
+    if (!validateEmail(email)) {
+      setErrorEmail("Veuillez entrer une adresse e-mail valide.");
+      return;
+    } else {
+      setErrorEmail("");
     }
+
+    if (!validatePassword(password)) {
+      setErrorPassword(
+        "Le mot de passe doit contenir au moins 8 caractères, incluant des lettres et des chiffres."
+      );
+      return;
+    } else {
+      setErrorPassword("");
+    }
+
+    dispatch(signinThunk({ email, password }));
   };
 
   return (
@@ -46,6 +70,7 @@ const SignIn = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
+              {errorEmail && <p className="error-message">{errorEmail}</p>}
             </div>
             <div className="input-wrapper">
               <label htmlFor="password">Password</label>
@@ -55,6 +80,9 @@ const SignIn = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              {errorPassword && (
+                <p className="error-message">{errorPassword}</p>
+              )}
             </div>
             <div className="input-remember">
               <input

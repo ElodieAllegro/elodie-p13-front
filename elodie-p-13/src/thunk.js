@@ -9,12 +9,12 @@ export const signinThunk = createAsyncThunk(
       const result = await res.json();
 
       if (!res.ok) {
-        return rejectWithValue("Email ou mot de passe incorrect.");
+        return rejectWithValue("Email ou mot de passe inconnu.");
       }
       return result.body;
     } catch (error) {
       console.error("Erreur de connexion:", error);
-      return rejectWithValue("Problème de connexion. Vérifiez votre réseau.");
+      return rejectWithValue("Erreur de connexion. Vérifiez votre réseau.");
     }
   }
 );

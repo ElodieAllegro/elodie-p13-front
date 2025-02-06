@@ -11,6 +11,7 @@ const User = () => {
 
   const [localFirstName, setLocalFirstName] = useState(firstName);
   const [localLastName, setLocalLastName] = useState(lastName);
+  const [errorMessage, setErrorMessage] = useState("");
   const [edition, setEdition] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -30,12 +31,27 @@ const User = () => {
     }
   }, [navigate, token]);
 
-  const handleDelete = () => {
-    setLocalFirstName(firstName);
-    setLocalLastName(lastName);
+  const handleDelete = (e) => {
+    e.preventDefault();
+    setLocalFirstName("");
+    setLocalLastName("");
+    setEdition(true);
   };
+
+  // Si les champs sont vides, ne pas envoyer les modifications
   const setUserProfile = async (e) => {
     e.preventDefault();
+    const regex = /^[A-Za-z]{2,}$/;
+    if (localFirstName.trim() === "" && localLastName.trim() === "") {
+      return;
+    }
+    if (!regex.test(localFirstName) || !regex.test(localLastName)) {
+      setErrorMessage(
+        "Le nom et le prénom doivent contenir au moins 2 lettres , aucun chiffres ni caractères spéciaux."
+      );
+      return;
+    }
+    setErrorMessage("");
     try {
       dispatch(
         setUserProfileThunk({
@@ -44,7 +60,7 @@ const User = () => {
           token,
         })
       );
-      setEdition(!edition);
+      setEdition(false);
     } catch (e) {
       console.log(e);
     }
@@ -58,35 +74,39 @@ const User = () => {
             {!edition && ` ${firstName} ${lastName} !`}
           </h1>
           {!edition && (
-            <button
-              className="edit-button"
-              onClick={() => setEdition(!edition)}
-            >
+            <button className="edit-button" onClick={() => setEdition(true)}>
               Edit Name
             </button>
           )}
           {edition ? (
             <form className="form" onSubmit={setUserProfile}>
-              <div>
-                <input
-                  className="editInput"
-                  value={localFirstName}
-                  placeholder="firstName"
-                  onChange={(e) => setLocalFirstName(e.target.value)}
-                />
-                <button className="edit-button">Save</button>
+              <div className="errorMessage">
+                {errorMessage && (
+                  <p className="error-message">{errorMessage}</p>
+                )}
               </div>
+              <div className="inputForm">
+                <div className="inputDiv">
+                  <input
+                    className="editInput"
+                    value={localFirstName}
+                    placeholder="firstName"
+                    onChange={(e) => setLocalFirstName(e.target.value)}
+                  />
+                  <button className="edit-button">Save</button>
+                </div>
 
-              <div>
-                <input
-                  className="editInput"
-                  value={localLastName}
-                  placeholder="lastName"
-                  onChange={(e) => setLocalLastName(e.target.value)}
-                />
-                <button className="edit-button" onClick={handleDelete}>
-                  Cancel
-                </button>
+                <div className="inputDiv">
+                  <input
+                    className="editInput"
+                    value={localLastName}
+                    placeholder="lastName"
+                    onChange={(e) => setLocalLastName(e.target.value)}
+                  />
+                  <button className="edit-button" onClick={handleDelete}>
+                    Cancel
+                  </button>
+                </div>
               </div>
             </form>
           ) : (
